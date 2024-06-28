@@ -1,4 +1,4 @@
-package com.example.signin_google_auth
+package com.test.signin_google_auth
 
 import io.flutter.embedding.android.FlutterActivity
 
