@@ -64,8 +64,7 @@ class DefaultFirebaseOptions {
     messagingSenderId: '1085040357120',
     projectId: 'signinauthapp-69810',
     storageBucket: 'signinauthapp-69810.appspot.com',
-    iosClientId:
-        '1085040357120-3pokerblet21h6anj7c4cu8pvpeup538.apps.googleusercontent.com',
+    iosClientId: '1085040357120-3pokerblet21h6anj7c4cu8pvpeup538.apps.googleusercontent.com',
     iosBundleId: 'com.example.signinGoogleAuth',
   );
 
@@ -75,8 +74,7 @@ class DefaultFirebaseOptions {
     messagingSenderId: '1085040357120',
     projectId: 'signinauthapp-69810',
     storageBucket: 'signinauthapp-69810.appspot.com',
-    iosClientId:
-        '1085040357120-3pokerblet21h6anj7c4cu8pvpeup538.apps.googleusercontent.com',
+    iosClientId: '1085040357120-3pokerblet21h6anj7c4cu8pvpeup538.apps.googleusercontent.com',
     iosBundleId: 'com.example.signinGoogleAuth',
   );
 
@@ -89,4 +87,5 @@ class DefaultFirebaseOptions {
     storageBucket: 'signinauthapp-69810.appspot.com',
     measurementId: 'G-4WBPNVEQ9V',
   );
+
 }
