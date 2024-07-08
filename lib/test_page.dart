@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:signin_google_auth/constant.dart';
+import 'package:signin_google_auth/controllers/user_controller.dart';
 
 class TestPage extends StatefulWidget {
   const TestPage({Key? key}) : super(key: key);
@@ -12,11 +13,11 @@ class TestPage extends StatefulWidget {
 class _TestPageState extends State<TestPage> {
   String? profilePhotoURL;
   bool isLoading = false;
+  List<Map<String, dynamic>> userList = [];
 
   @override
   void initState() {
     super.initState();
-    // Uygulama yüklendiğinde kullanıcı durumunu kontrol et
     _checkUser();
   }
 
@@ -42,13 +43,15 @@ class _TestPageState extends State<TestPage> {
     });
   }
 
+  Future<void> _getUserList() async {
+    final users = await UserController.getUserList();
+    setState(() {
+      userList = users;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
-    FirebaseAuth.instance.authStateChanges().listen((User? user) {
-      userName = user!.displayName.toString();
-      userMail = user!.email.toString();
-    });
-
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
@@ -63,7 +66,7 @@ class _TestPageState extends State<TestPage> {
         padding: const EdgeInsets.symmetric(horizontal: 10),
         child: Column(
           children: [
-            const SizedBox(height: 20),
+            const SizedBox(height: 10),
             Row(
               children: [
                 if (isLoading)
@@ -100,56 +103,29 @@ class _TestPageState extends State<TestPage> {
                 ),
               ],
             ),
+            const SizedBox(height: 20),
+            ElevatedButton(
+              onPressed: _getUserList,
+              child: const Text("Kullanıcı Listesini Getir"),
+            ),
+            Expanded(
+              child: ListView.builder(
+                itemCount: userList.length,
+                itemBuilder: (context, index) {
+                  final user = userList[index];
+                  return ListTile(
+                    leading: user['photoURL'] != null
+                        ? Image.network(user['photoURL'])
+                        : const Icon(Icons.account_circle),
+                    title: Text(user['displayName'] ?? 'No Name'),
+                    subtitle: Text(user['email'] ?? 'No Email'),
+                  );
+                },
+              ),
+            ),
           ],
         ),
       ),
     );
   }
-
-// Future<void> addToDatabase(int index) async {
-//     String productName = productNameTextField.text;
-//     String productInfo = productInfoTextField.text;
-//     String productPrice = productPriceTextField.text;
-
-//     final product = {
-//       "productName": productName,
-//       "productInfo": productInfo,
-//       "productPrice": productPrice,
-//       "ProductPhotoURL": _imageFileList![index].path,
-//       'createdTime': DateTime.now()
-//     };
-
-//     // Yeni bir belge oluşturmak için `add()` yöntemini kullanın.
-//     final docRef = await FirebaseFirestore.instance
-//         .collection('Users')
-//         .doc("IQX8DBt1HaXXg6qdBIfMS0OLsEe2")
-//         .collection("Products")
-//         .add(product);
-
-//     // Oluşturulan belgeye docID ekleyin.
-//     await docRef.update({'docId': docRef.id});
-
-//     productNameTextField.clear();
-//     productInfoTextField.clear();
-//     productPriceTextField.clear();
-//     selectedImagePath = "";
-
-//     final userRef = FirebaseFirestore.instance
-//         .collection("Users")
-//         .doc("IQX8DBt1HaXXg6qdBIfMS0OLsEe2")
-//         .collection("Products")
-//         .orderBy('createdTime', descending: true);
-
-//     final querySnapshot = await userRef.get();
-//     getdataList.clear();
-//     querySnapshot.docs.forEach((doc) async {
-//       await FirebaseFirestore.instance
-//           .collection('Users')
-//           .doc("IQX8DBt1HaXXg6qdBIfMS0OLsEe2")
-//           .collection("Products")
-//           .doc(doc.id)
-//           .update({'docId': doc.id});
-//       getdataList.add(doc.data());
-//     });
-//   }
 }
