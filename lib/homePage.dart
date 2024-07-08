@@ -43,16 +43,43 @@ class _HomepageState extends State<Homepage> {
                     content: Text(error.message ?? "Hata, tekrar deneyiniz!")));
               }
             },
-            child: Container(
-              width: 200,
-              height: 40,
-              decoration: BoxDecoration(
-                  color: Colors.white, borderRadius: BorderRadius.circular(10)),
-              child: const Center(
-                  child: Text(
-                "Sign-in Google",
-                style: TextStyle(fontSize: 19, fontWeight: FontWeight.w500),
-              )),
+            child: Column(
+              children: [
+                Container(
+                  width: 200,
+                  height: 40,
+                  decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(10)),
+                  child: const Center(
+                      child: Text(
+                    "Sign-in Google",
+                    style: TextStyle(fontSize: 19, fontWeight: FontWeight.w500),
+                  )),
+                ),
+                InkWell(
+                  onTap: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => TestPage(),
+                        ));
+                  },
+                  child: Container(
+                    width: 200,
+                    height: 40,
+                    decoration: BoxDecoration(
+                        color: Colors.blue,
+                        borderRadius: BorderRadius.circular(10)),
+                    child: const Center(
+                        child: Text(
+                      "Navigate Test Page",
+                      style:
+                          TextStyle(fontSize: 19, fontWeight: FontWeight.w500),
+                    )),
+                  ),
+                ),
+              ],
             ),
           ),
         ],
