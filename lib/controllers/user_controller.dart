@@ -3,7 +3,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
 class UserController {
-  // Google ile giriş yapma ve kullanıcıyı Firestore'a kaydetme metodu
   static Future<User?> loginWithGoogle() async {
     final googleAccount = await GoogleSignIn().signIn();
     final googleAuth = await googleAccount?.authentication;

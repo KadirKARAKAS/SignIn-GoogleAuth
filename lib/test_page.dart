@@ -1,6 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:signin_google_auth/constant.dart';
 import 'package:signin_google_auth/controllers/user_controller.dart';
 
 class TestPage extends StatefulWidget {
@@ -14,11 +13,13 @@ class _TestPageState extends State<TestPage> {
   String? profilePhotoURL;
   bool isLoading = false;
   List<Map<String, dynamic>> userList = [];
+  String? userID2;
 
   @override
   void initState() {
     super.initState();
     _checkUser();
+    _getUserList();
   }
 
   void _checkUser() {
@@ -28,6 +29,7 @@ class _TestPageState extends State<TestPage> {
     FirebaseAuth.instance.authStateChanges().listen((User? user) {
       if (user != null) {
         setState(() {
+          userID2 = user.uid;
           profilePhotoURL = user.photoURL;
           isLoading = false;
         });
@@ -50,13 +52,25 @@ class _TestPageState extends State<TestPage> {
     });
   }
 
+  Map<String, dynamic>? _getUserByID(String? userID) {
+    if (userID == null) return null;
+    for (var user in userList) {
+      if (user['uid'] == userID) {
+        return user;
+      }
+    }
+    return null;
+  }
+
   @override
   Widget build(BuildContext context) {
+    final currentUser = _getUserByID(userID2);
+
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
-        title: Center(
-          child: const Text(
+        title: const Center(
+          child: Text(
             "Home Page",
             style: TextStyle(fontSize: 33, fontWeight: FontWeight.bold),
           ),
@@ -86,45 +100,58 @@ class _TestPageState extends State<TestPage> {
                 else
                   const Text("Profil fotoğrafı yok"),
                 const SizedBox(width: 10),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      userName,
-                      style:
-                          TextStyle(fontSize: 24, fontWeight: FontWeight.w500),
-                    ),
-                    Text(
-                      userMail,
-                      style:
-                          TextStyle(fontSize: 20, fontWeight: FontWeight.w300),
-                    ),
-                  ],
-                ),
+                if (currentUser != null)
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(currentUser["displayName"] ?? "No Display Name",
+                          style: const TextStyle(
+                              fontSize: 24, fontWeight: FontWeight.w500)),
+                      Text(currentUser["email"] ?? "No Email",
+                          style: const TextStyle(
+                              fontSize: 20, fontWeight: FontWeight.w300)),
+                    ],
+                  )
+                else
+                  const Text("Kullanıcı bilgileri yok"),
               ],
             ),
             const SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: _getUserList,
-              child: const Text("Kullanıcı Listesini Getir"),
+            Text(
+              "Üyeler",
+              style: TextStyle(fontSize: 30, fontWeight: FontWeight.w500),
             ),
             Expanded(
               child: ListView.builder(
                 itemCount: userList.length,
                 itemBuilder: (context, index) {
                   final user = userList[index];
-                  return ListTile(
-                    leading: user['photoURL'] != null
-                        ? Image.network(user['photoURL'])
-                        : const Icon(Icons.account_circle),
-                    title: Text(user['displayName'] ?? 'No Name'),
-                    subtitle: Text(user['email'] ?? 'No Email'),
-                  );
+                  return listTitle(user, index);
                 },
               ),
             ),
           ],
         ),
+      ),
+    );
+  }
+
+  InkWell listTitle(Map<String, dynamic> user, int index) {
+    return InkWell(
+      onTap: () {
+        print(index);
+      },
+      child: Stack(
+        children: [
+          Container(),
+          ListTile(
+            leading: user['photoURL'] != null
+                ? Image.network(user['photoURL'])
+                : const Icon(Icons.account_circle),
+            title: Text(user['displayName'] ?? 'No Name'),
+            subtitle: Text(user['email'] ?? 'No Email'),
+          ),
+        ],
       ),
     );
   }
